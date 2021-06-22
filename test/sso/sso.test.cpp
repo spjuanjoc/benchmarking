@@ -12,30 +12,41 @@
 #include <cstdio>
 #include <iostream>
 
-TEST_CASE("should benchmark a small string construction", "[small_string][copy]")
+/**
+ * Small String in MSVC and GCC ~15 chars, in clang ~22
+ */
+TEST_CASE("should benchmark string copy", "[copy]")
+{
+  std::string small_string{"Small string"};    // 12 chars
+  std::string big_string{"16+ sized string"};  // 16 chars
+  auto size = sizeof(std::string);
+  auto capacity = std::string().capacity();
+  auto small = std::string(capacity, '*');
+  auto big = std::string(capacity + 1, '*');
+
+  std::clog << "sizeof  : " << size << '\n';
+  std::clog << "Capacity: " << capacity << '\n';  // The max size of a Small String
+  std::clog << "Small   : " << small.capacity() << '\n';
+  std::clog << "Big     : " << big.capacity() << '\n';
+
+  BENCHMARK("Small string copy") { std::string copy(small_string); };
+  BENCHMARK("Big string copy") { std::string copy(big_string); };
+}
+
+TEST_CASE("should benchmark a small string copy construction", "[small_string][copy]")
 {
   std::string small_string{"Small string"};
 
-  BENCHMARK("Small string deep copy") { std::string s(small_string); };
-  BENCHMARK("Small string const ref") { const std::string& s(small_string); };
-  BENCHMARK("Small string const ref {}") { const std::string& s{small_string}; };
+  BENCHMARK("Small string copy") { std::string s(small_string); return s;};
   BENCHMARK("Small string move") { const std::string s{std::move(small_string)}; };
-  BENCHMARK("Small string view") { std::string_view s(small_string); };
+  BENCHMARK("Small string view") { std::string_view s(small_string); return s;};
 }
 
-TEST_CASE("should benchmark a big string construction", "[big_string][copy]")
+TEST_CASE("should benchmark a big string copy construction", "[big_string][copy]")
 {
-  std::string big_string{R"(some big string with enough characters
- not to be optimized by the compiler
- not to be optimized by the compiler
- not to be optimized by the compiler
- not to be optimized by the compiler
- not to be optimized by the compiler
-)"};
+  std::string big_string{"some big string with enough characters"};
 
-  BENCHMARK("Big string deep copy") { std::string s(big_string); };
-  BENCHMARK("Big string const ref") { const std::string& s(big_string); };
-  BENCHMARK("Big string const ref {}") { const std::string& s{big_string}; };
-  BENCHMARK("Big string move") { const std::string s{std::move(big_string)}; };
-  BENCHMARK("Big string view") { std::string_view s(big_string); };
+  BENCHMARK("Big string copy") { std::string s(big_string); return s;};
+  BENCHMARK("Big string move") { std::string s{std::move(big_string)}; };
+  BENCHMARK("Big string view") { std::string_view s(big_string); return s;};
 }
