@@ -1,5 +1,5 @@
 /**
- * @brief micro-benchmark of different implementations of fibonacci.
+ * @brief micro-benchmark for different implementations of fibonacci.
  *
  * @author  juan.castellanos
  * @date    2021-06-21
@@ -11,6 +11,16 @@
 #include <cmath>
 #include <cstdint>
 
+/**
+ * * Calculates a number of the Fibonacci Sequence using the recurrent relation.
+ *
+ * F(0) = 0
+ * F(1) = 1
+ * F(n) = F(n-1) + F(n-2)
+ *
+ * @param number The element of the succession.
+ * @return The fibonacci number of the element.
+ */
 std::uint64_t regularFib(const std::uint64_t number)
 {
   if (number == 0) return 0;
@@ -27,6 +37,18 @@ constexpr std::uint64_t constexprFib(const std::uint64_t number)
   return constexprFib(number - 1) + constexprFib(number - 2);
 }
 
+/**
+ * Calculates a number of the Fibonacci Sequence using the Binet's formula
+ *
+ *         (1 + √5 )ⁿ - (1 - √5 )ⁿ
+ * F(n) =  ──────────────────────
+ *                2ⁿ * √5
+ * F(0) = 0
+ * F(1) = 1
+ *
+ * @param number The element of the succession.
+ * @return The fibonacci number of the element.
+ */
 std::uint64_t binetsFib(const double number)
 {
   static const auto sqrt_5 = std::sqrt(5);
@@ -61,9 +83,9 @@ TEST_CASE("should check a Binet's fib(n)", "[fibonacci]")
   CHECK(binetsFib(6) == 8);
 }
 
-TEST_CASE("should benchmark different fib(15)", "[fibonacci]")
+TEST_CASE("should benchmark different fib(25)", "[fibonacci]")
 {
-  BENCHMARK("regular fibonacci of 15") { return regularFib(25); };
-  BENCHMARK("constexpr fibonacci of 15") { return constexprFib(25); };
-  BENCHMARK("Binet's fibonacci of 15") { return binetsFib(25); };
+  BENCHMARK("regular   fibonacci of 25") { return regularFib(25); };
+  BENCHMARK("constexpr fibonacci of 25") { return constexprFib(25); };
+  BENCHMARK("Binet's   fibonacci of 25") { return binetsFib(25); };
 }
