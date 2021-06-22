@@ -16,7 +16,7 @@ find_package(Catch2 REQUIRED)
 
 #target_link_libraries(${TEST_NAME} PRIVATE fmt::fmt)
 target_compile_features(${TEST_NAME} PUBLIC cxx_std_17)
-target_include_directories(${TEST_NAME} PRIVATE ${Catch2_INCLUDE_DIRS} ../include include)
+target_include_directories(${TEST_NAME} PRIVATE ${Catch2_INCLUDE_DIRS})
 
 
 add_subdirectory(fib)
